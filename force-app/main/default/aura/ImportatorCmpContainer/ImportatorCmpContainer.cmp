@@ -1,0 +1,4 @@
+<!--Contenedor Aura del LWC importator-->
+<aura:component implements="flexipage:availableForAllPageTypes">
+    <c:importator></c:importator>
+</aura:component>

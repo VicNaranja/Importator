@@ -1,0 +1,21 @@
+<apex:page>
+
+    <!-- Pagina VF con la creacion del componente contenedor que incluye el lwc importator -->
+    <apex:includeLightning />
+
+    <div id="lightning" />
+    <script>
+        $Lightning.use("c:ImportatorAppContainer", function() {
+          $Lightning.createComponent(
+              "c:ImportatorCmpContainer",
+              { },
+              "lightning",
+              function(cmp) {
+                console.log("Importator creado");
+                // do some stuff
+              }
+          );
+        });
+    </script>
+
+</apex:page>

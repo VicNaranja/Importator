@@ -4,7 +4,7 @@
 global with sharing class ImportTatorController
 {
     
-    // Recupera todos los objetos de Salesforce
+    // Recupera todos los objetos de Salesforce 
     @AuraEnabled (cacheable=true)
     public static List<ImportObject> getObjectsSalesforce()
     {

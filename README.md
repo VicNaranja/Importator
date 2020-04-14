@@ -27,3 +27,7 @@ Test Importator -> Realiza la importación pero no hace commit de la operación.
 Inicio Importator -> Realiza la importación haciendo commit en Salesforce.
 
 <img src="capturas/Resultados.png" >
+
+Además, se incluye una pagina visualforce que integra el componente mediente lightning out y asi lo puedas usuar en classic sin ningun problema.
+
+<img src="capturas/Classic.png" >
