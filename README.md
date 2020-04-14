@@ -14,11 +14,11 @@ En el origen, podremos elegir entre fichero CSV y EXCEL. De forma automatica pod
 
 En la pestaña destino eligiremos el objeto de Salesforce y la operación que queramos realizar, inserción o actualización.
 
-<img src="capturas/Destino.png" >
+<img src="capturas/Destinos.png" >
 
 Después, en la pestaña mapeos, eligiremos el mapeo correspondiente entre las columnas de nuestro fichero y los campos de Salesforce. Pero, si nuestras columnas coinciden con los campos de Salesforce, bastará con pulsar el boton "Automatch" para realizar el mapeo instantaneo.
 
-<img src="capturas/Mapeos.png" >
+<img src="capturas/mapeos.png" >
 
 En la ultima pestaña veremos el resultado final de la operación. Podremos elegir el tamaño del chunk para la importación y tendremos dos opciones para importar:
 Test Importator -> Realiza la importación pero no hace commit de la operación. Perfecto para confirmar si los datos son correctos.
