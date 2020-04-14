@@ -1,0 +1,111 @@
+.container
+{
+    background:#ffffff;    
+} 
+.containerOrigen,.containerDestino,.containerMapeos,.containerResultados
+{
+    padding:10px;
+}
+.menuInput
+{
+    width:100%;
+}
+.inputFileText,.slds-file-selector
+{
+    display: inline-block;
+    *display: inline; 
+}
+.inputFileText
+{
+    width: 80%;
+}
+.divRecargar
+{
+    display: inline-grid;
+}
+.menuFichero
+{
+    width: 200px;
+}
+.menuFichero .slds-file-selector__body
+{
+    display: inline-grid;
+}
+
+.filePreview{
+    margin-top: 15px;
+    width: 81%;
+}
+.tablePreview{
+    margin-top: 15px;
+    margin-bottom: 25px;
+    width: 81%;
+}
+.perror
+{
+    color: tomato;
+}
+.tableMapping{
+    margin-top: 15px;
+    width: 95%;
+}
+
+.slds-table_cell-buffer tr:first-child{
+    background-color: #fafaf9;
+    color: #514f4d;
+
+}
+.selectObject,.selectOption
+{
+    width: 80%;
+}
+.selectObject
+{
+    margin-bottom: 10px;
+}
+.containerDestino p,.containerMapeos p,.containerResultados p
+{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.columnaMapeo
+{
+    float:left;
+}
+
+.slds-card
+{
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background-clip: padding-box;
+    box-shadow: 0 2px 2px 0 #dedcdc;
+}
+.botonAutoMatch
+{
+    float: right; 
+    margin-bottom: 10px;
+}
+.menuResultados
+{
+    padding-bottom: 10px;    
+}
+
+.selectMapping option
+{
+    background-color: white;
+}
+.selectSelected
+{
+ background-color: coral;
+}
+
+.inputChunk .slds-input
+{
+    padding-right: 0;
+    width: 180px;
+}
+.botonTest
+{
+    margin-left: 5px;
+    margin-right: 5px;
+}

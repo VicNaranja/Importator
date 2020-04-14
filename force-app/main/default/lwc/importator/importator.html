@@ -1,0 +1,245 @@
+<template>
+    <div class="container">
+
+        <lightning-tabset>
+            <lightning-tab label="Origen">
+
+                <div class=containerOrigen>
+                    <p>Bienvenidos a imporTATOR</p>
+
+
+                    <div class="menuInput">  
+
+                        <div class="inputFileText">
+                            <lightning-input value={fileName} placeholder="Seleccione un fichero EXCEL o CSV con los datos a importar" disabled="" ></lightning-input>
+                        </div>
+
+                        <div class="slds-file-selector slds-file-selector_files">
+                            
+                            <input type="file" class="slds-file-selector__input slds-assistive-text" 
+                                                
+                                                id="file-upload-input-01" 
+                                                aria-labelledby="file-selector-primary-label file-selector-secondary-label" onchange={onChangeFile} />
+                            
+                            <div class="menuFichero">
+                            <label class="slds-file-selector__body" for="file-upload-input-01" id="file-selector-secondary-label">
+                                <span class="slds-file-selector__button slds-button slds-button_neutral">Examinar</span>                            
+                            </label>
+                            <div class="divRecargar">
+                                <button class="slds-button slds-button_neutral botonRecargar" onclick={onReload}>Recargar</button>
+                            </div>
+                            </div>
+
+                        </div>
+                       
+                
+                    </div>
+                       
+                    <div if:true={fileRead} class="filePreview" >
+                        <p>A continuación puede ver una previsualización de las primeras 20 líneas de su fichero. Si esta conforme, avance a la pestaña de destino.</p>
+                        <table class="tablePreview slds-table slds-table_cell-buffer slds-table_bordered ">
+                            <tbody>
+                            <template for:each={objectFilePreview} for:item="line">
+                                <tr class="slds-hint-parent" key={line.Id}>
+
+                                    <template for:each={line} for:item="column">
+                                        <th key={column.Id} class="column">
+                                            <c-importator-column-value key={column.Id} columna={column} ></c-importator-column-value>
+                                        </th>                                                                               
+                                    </template>
+                                    
+                                </tr>
+                            </template>
+                            </tbody>
+                        </table>
+                        <p if:true={lineasLimpiadas} class="perror"><span>Ojo, se han eliminado </span>{numerolineasLimpiadas}<span> lineas del fichero con longitud distinta a la cabecera.</span> </p>
+                    </div>
+                
+                    
+                </div>
+
+            </lightning-tab>
+
+            
+            <lightning-tab label="Destino" >
+
+                <div class=containerDestino>
+                    <div>
+                        <p>Seleccione el objeto de Salesforce al que desea cargar la información</p>
+                    </div>
+                    
+                    <select class="slds-select selectObject" onchange={onObjectChange}>
+                        <option  >Seleccione una opción</option>
+                        <template for:each={listaObjetos.data} for:item="objeto">
+                            <option  key={objeto.Id}>{objeto.name}</option>
+                        </template>
+                    </select>
+
+                    <div>
+                        <p>Seleccione la operación a realizar</p>
+                    </div>
+                    
+                    <select class="slds-select selectOption"  onchange={onActionChange}>
+                        <option >Seleccione una opción</option>
+                        <template for:each={listaOpcionesImport} for:item="opciones">
+                            <option key={opciones.Id}>{opciones}</option>
+                        </template>
+                    </select>
+                    
+                </div>
+                
+            </lightning-tab>
+
+
+            <lightning-tab label="Mapeos">
+                <div class=containerMapeos>
+                    
+                    <div class="slds-grid slds-gutters menuMapeos">
+                        <div class="slds-col slds-size_2-of-3">
+                            <p>Seleccione para cada campo del objeto de Salesforce, el campo correspondiente del fichero</p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <button class="slds-button slds-button_neutral botonAutoMatch" onclick={onAutomatch}>Automatch</button>
+                        </div>
+                    </div>
+
+                    
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                  <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                    <div class="slds-media__figure">
+                                        <lightning-icon icon-name="action:sort" alternative-text="Mapeo" title="Mapeo"></lightning-icon>
+                                    </div>
+                                    <div class="slds-media__body">
+                                      <h2 class="slds-card__header-title">                                        
+                                          <span>{definicionImport.objetoDestino}</span>                                        
+                                      </h2>
+                                    </div>
+                                  </header>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+
+                                    <table class="tableMappging slds-table slds-table_cell-buffer slds-table_bordered ">
+                                        <tbody>
+                                        <template for:each={listaCampos} for:item="campo">
+                                            <tr class="slds-hint-parent" key={campo.Id}>
+            
+                                                <td>
+                                                    {campo.name}
+                                                </td>
+            
+                                                <td>
+                                                    <select class="slds-select selectMapping" onchange={onMappingChange}>
+                                                        <option value="0">Seleccione una opción</option>
+                                                        <template for:each={definicionImport.columnas} for:item="columnName">
+                                                            <option value={campo.name}  key={columnName.Id}>{columnName}</option>
+                                                        </template>
+                                                    </select>
+                                                </td>                                                       
+                                                
+                                            </tr>
+                                        </template>
+                                        </tbody>
+                                    </table>
+
+										
+                                </div>
+                            </article>
+                        </div>
+                                           
+                      </div>
+  
+                </div>
+            </lightning-tab>
+
+
+            <lightning-tab label="Resultados">
+                <div class=containerResultados>
+                    
+                    <div class="slds-grid menuResultados">
+                        <div class="">
+                            <p>Pulse el botón de acción correpondiente para comenzar la importación</p>
+                        </div>    
+                       
+                        <div class="slds-col_bump-left">
+
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                                <div class="">
+                                    <div class="inputChunk">
+
+                                        <div class="slds-form-element__control">
+                                            <input type="number" required="" class="slds-input" placeholder="Chunk Size (100 Default)" />
+                                        </div>
+                                       
+                                    </div>
+                                </div> 
+                                <div class="">
+                                    <button class="slds-button slds-button_neutral botonTest" onclick={onInicioTestImport}>Test ImporTator</button>
+                                </div> 
+                                <div class="">
+                                    <button class="slds-button slds-button_neutral botonInicio" onclick={onInicioImport}>Inicio ImporTator</button>  
+                                </div> 
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <div if:true={errorResultados}>
+                        <p class="perror">{textoErrorResultados}</p>
+                    </div>
+
+                    <article class="slds-card">
+                        <div class="slds-card__header slds-grid">
+                          <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="action:goal" alternative-text="Mapeo" title="Mapeo"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                              <h2 class="slds-card__header-title">                                        
+                                  <span>Resumen importación</span>                                        
+                              </h2>
+                            </div>
+                            
+                          </header>
+                        </div>
+                        <div class="slds-card__body slds-card__body_inner">
+
+                            <template if:true={inicioImport} >
+                            <table class="tablePreview slds-table slds-table_cell-buffer slds-table_bordered ">
+                                <tbody>
+                                <template for:each={objectFile} for:item="line">
+                                    <tr class="slds-hint-parent" key={line.Id}>
+    
+                                        <template for:each={line} for:item="column">
+                                            <th key={column.Id} class="column">
+                                                <c-importator-column-value key={column.Id} columna={column} ></c-importator-column-value>
+                                            </th> 
+                                        </template>
+                                        
+                                    </tr>
+                                </template>
+                                </tbody>
+                            </table>
+                            </template>
+
+
+                                
+                        </div>
+                        
+
+                    </article>
+
+                </div>
+            </lightning-tab>
+        </lightning-tabset>
+
+
+        
+
+        
+
+       
+    </div>
+</template>

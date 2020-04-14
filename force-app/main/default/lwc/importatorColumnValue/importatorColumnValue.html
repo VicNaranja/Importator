@@ -1,0 +1,18 @@
+<template>
+
+    
+    <template  if:true={datos}>
+        {columnData}
+    </template>
+
+    <template if:true={img}> 
+        
+        <template if:true={ok} >    
+            <lightning-icon icon-name="action:approval" alternative-text="ok" title="true" size="xx-small"></lightning-icon> 
+        </template>
+        <template if:true={ko} >
+            <lightning-icon icon-name="action:close" alternative-text="ko" title="false" size="xx-small"></lightning-icon> 
+        </template>
+    </template>
+
+</template>
