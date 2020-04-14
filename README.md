@@ -1,7 +1,7 @@
 IMPORTATOR
 ------------
 
-Bienvenido al importador de datos mas rapido y sencillo para Salesforce, realizado con Lightning Web Components para una integracion con Salesforce perfecta.
+Bienvenido al importador de datos mas rapido y sencillo para Salesforce, realizado con Lightning Web Components para una integración con Salesforce perfecta.
 
 El componente se puede agregar donde sea necesario, una pestaña, aplicacion, comunidad etc..
 
@@ -12,11 +12,11 @@ En el origen, podremos elegir entre fichero CSV y EXCEL. De forma automatica pod
 <img src="capturas/Origen.png" >
 
 
-En la pestaña destino eligiremos el objeto de Salesforce y la operación que queramos realizar, inserción o actualización.
+En la pestaña destino elegiremos el objeto de Salesforce y la operación que queramos realizar, inserción o actualización.
 
 <img src="capturas/Destinos.png" >
 
-Después, en la pestaña mapeos, eligiremos el mapeo correspondiente entre las columnas de nuestro fichero y los campos de Salesforce. Pero, si nuestras columnas coinciden con los campos de Salesforce, bastará con pulsar el boton "Automatch" para realizar el mapeo instantaneo.
+Después, en la pestaña mapeos, elegiremos el mapeo correspondiente entre las columnas de nuestro fichero y los campos de Salesforce. Pero, si nuestras columnas coinciden con los campos de Salesforce, bastará con pulsar el boton "Automatch" para realizar el mapeo instantaneo.
 
 <img src="capturas/mapeos.png" >
 
