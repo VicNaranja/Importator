@@ -23,6 +23,7 @@ Después, en la pestaña mapeos, eligiremos el mapeo correspondiente entre las c
 En la ultima pestaña veremos el resultado final de la operación. Podremos elegir el tamaño del chunk para la importación y tendremos dos opciones para importar:
 
 Test Importator -> Realiza la importación pero no hace commit de la operación. Perfecto para confirmar si los datos son correctos.
+
 Inicio Importator -> Realiza la importación haciendo commit en Salesforce.
 
 <img src="capturas/Resultados.png" >
