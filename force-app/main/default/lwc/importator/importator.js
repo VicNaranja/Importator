@@ -19,7 +19,7 @@ export default class Importator extends LightningElement {
     @track lineasLimpiadas = false;
 
     /*************** Variables TAB Destino ****************/
-    @track listaOpcionesImport=[]; //Insertar o actualizar dependiendo de los permisos del objeto
+    @track listaOpcionesImport=[]; //Insertar, actualizar o borrar dependiendo de los permisos del objeto
     @wire(getObjectsSalesforce) listaObjetos; //Lista de objetos distino; OJO el resultado esta dentro de la variable data
     
 
@@ -30,16 +30,22 @@ export default class Importator extends LightningElement {
         objetoDestino : '',
         accion : '',
         mapeo : null,
+        mapeoLookups : null,
         test : false
     }; //variable con la configuracion de mapeo
-
+    mapaLookups = new Map();
     
     /*************** Variables TAB Resultado ****************/
     @track errorResultados = false;
     @track textoErrorResultados = '';
     @track inicioImport = false; //true cuando se inicia el proceso de importacion
 
-
+    /************** Modal Lookup ********************/
+    @track showLookupModal; //Indica si mostramos el componenete de lookups
+    @track columnLookup; //Indica la columna a la que queremos hacer un lookup
+    fieldLookup;
+    @track valueLookup; //Indica la configuracion del propio lookup
+    
     /************* FUNCIONES  *************************** */
 
     //funcion de inicio
@@ -64,6 +70,8 @@ export default class Importator extends LightningElement {
             else if (fileName.endsWith('.xlsx'))            
                 this.parseExcel();
         } 
+        //Generamos los datos para los mapeos
+        this.generateMapping();
     }
     //Carga el fichero 
     loadData(data)
@@ -223,7 +231,11 @@ export default class Importator extends LightningElement {
             {
                 this.listaOpcionesImport.push('Actualizar');
             }
-            
+            if (objectoSeleccionado.isDeletable)
+            {
+                this.listaOpcionesImport.push('Eliminar');
+            }
+
             //Generamos los datos para los mapeos
             this.generateMapping();
         } 
@@ -237,7 +249,8 @@ export default class Importator extends LightningElement {
         console.log('onActionChange:' + select.options[select.selectedIndex].value);
 
         if (select.options[select.selectedIndex].value == 'Insertar' ||
-            select.options[select.selectedIndex].value == 'Actualizar')
+            select.options[select.selectedIndex].value == 'Actualizar' ||
+            select.options[select.selectedIndex].value == 'Eliminar')
         {     
             this.definicionImport.accion = select.options[select.selectedIndex].value;        
         }
@@ -250,6 +263,7 @@ export default class Importator extends LightningElement {
         this.generateMapping();
     }
 
+    //Cuando el usuario selecciona un mapeo ponemos el fondo de otro color para que quede claro
     onMappingChange(event)
     {
         var select = event.target;
@@ -260,6 +274,7 @@ export default class Importator extends LightningElement {
         
     }
 
+    //Cambia el fondo del desplegable a otro color
     selectedBackground(select, selected)
     {
         if (selected && !select.classList.contains('selectSelected'))
@@ -295,10 +310,12 @@ export default class Importator extends LightningElement {
     //Solo descarga si existe campo y accion seleccionados de la pantalla destino
     async generateMapping()
     {
+        console.log('getFields');
         if (this.definicionImport.objetoDestino && this.definicionImport.accion )
         {
-            this.listaCampos = await getFieldsSalesforce({fieldName: this.definicionImport.objetoDestino , 
-                                                          action : this.definicionImport.accion });
+            this.listaCampos = await getFieldsSalesforce({myObject: this.definicionImport.objetoDestino , 
+                                                          action : this.definicionImport.accion,
+                                                          withSharing : true });
 
             //Limpio la seleccion de los mapeos por si estuvieran seleccionados
             var selects = this.template.querySelectorAll("select.selectMapping");
@@ -377,6 +394,13 @@ export default class Importator extends LightningElement {
             this.textoErrorResultados = 'Seleccione al menos un mapeo antes de empezar el proceso';
             return;
         }
+
+        //Inicio variable lookup        
+        this.definicionImport.mapeoLookups = {};
+        //Convierto el mapa en objetos para poder convertirlo en string
+        this.mapaLookups.forEach((value, key) => {
+            this.definicionImport.mapeoLookups[key] = JSON.parse(JSON.stringify(value));
+        });
         
         //Iniciamos proceso
         this.inicioImport = true;
@@ -420,15 +444,18 @@ export default class Importator extends LightningElement {
             //Para cada fila del fichero le acoplamos el resultado del WS
             for(var k = i ; k < numRows  ; k++)
             {               
+                //k es el indice de la linea procesada
                 console.log('para cada resultado');
                 if (resultado[indiceResultado].isSuccess)
                     this.objectFile[k].push('icon:true');
                 else
                     this.objectFile[k].push('icon:false');
+
                 if (resultado[indiceResultado].id)
                     this.objectFile[k].push(resultado[indiceResultado].id);
                 else
                     this.objectFile[k].push('');
+
                 if (resultado[indiceResultado].error)
                     this.objectFile[k].push(resultado[indiceResultado].error);
                 else
@@ -440,7 +467,57 @@ export default class Importator extends LightningElement {
         
     }
    
-    
-    
+    //El usuario pulsa el boton de nuevo lookup
+    openLookup(event)
+    {
+        //Solo abrimos si existe campo seleccionado
+        var campo  = event.target.getAttribute('data-column');
+        console.log(event.target.getAttribute('data-column'));  
+
+        //Recupero el select del campo mapeados
+        var select = this.template.querySelectorAll("select.selectMapping[data-column=" + campo + "]" )[0];
+
+        if (select && select.selectedIndex > 0)
+        {            
+            //Si hay mapeo dejo intoducir lookup
+            this.showLookupModal = true; 
+            this.columnLookup = select.options[select.selectedIndex].text;     
+            this.fieldLookup = select.options[select.selectedIndex].value;    
+            this.valueLookup = this.mapaLookups.get(this.columnLookup);            
+        }   
+        else
+        {
+            alert('Para crear un lookup primero añada un mapeo con el campo de Salesfroce');
+        }  
+                
+    }
+
+    cancelLookup()
+    {
+        this.showLookupModal = false; 
+    }
+      
+    saveLookup(event)
+    {
+        if (event.detail.objetoDestino == 'Seleccione el objeto destino')
+        {
+            //Se borra el lookup
+            this.mapaLookups.delete(this.columnLookup);
+        }
+        else
+        {
+            //Se actualiza el lookup
+            this.mapaLookups.set(this.columnLookup, event.detail);
+            
+            console.log('saveLookup::' , this.mapaLookups);
+            
+            var divLookup = this.template.querySelectorAll('[data-id='+ this.fieldLookup +']')[0];
+            divLookup.classList.add('rellenado');
+        }
+        this.showLookupModal = false; 
+    }
+
+  
+       
 
 }

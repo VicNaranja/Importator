@@ -17,7 +17,7 @@
                         <div class="slds-file-selector slds-file-selector_files">
                             
                             <input type="file" class="slds-file-selector__input slds-assistive-text" 
-                                                
+                                                accept=".csv,.xlsx"
                                                 id="file-upload-input-01" 
                                                 aria-labelledby="file-selector-primary-label file-selector-secondary-label" onchange={onChangeFile} />
                             
@@ -120,7 +120,6 @@
                                   </header>
                                 </div>
                                 <div class="slds-card__body slds-card__body_inner">
-
                                     <table class="tableMappging slds-table slds-table_cell-buffer slds-table_bordered ">
                                         <tbody>
                                         <template for:each={listaCampos} for:item="campo">
@@ -131,7 +130,7 @@
                                                 </td>
             
                                                 <td>
-                                                    <select class="slds-select selectMapping" onchange={onMappingChange}>
+                                                    <select class="slds-select selectMapping" data-column={campo.name} onchange={onMappingChange}>
                                                         <option value="0">Seleccione una opción</option>
                                                         <template for:each={definicionImport.columnas} for:item="columnName">
                                                             <option value={campo.name}  key={columnName.Id}>{columnName}</option>
@@ -139,21 +138,24 @@
                                                     </select>
                                                 </td>                                                       
                                                 
+                                                <td>
+                                                    <div data-id={campo.name} class="divLookupButton">
+                                                        <!-- boton de lookup-->
+                                                        <lightning-button-icon icon-name="utility:filterList" alternative-text="Lookup" title="Lookups" size="xx-small" data-column={campo.name} onclick={openLookup}></lightning-button-icon>
+                                                    </div>
+                                                </td>
+
                                             </tr>
                                         </template>
                                         </tbody>
-                                    </table>
-
-										
+                                    </table>										
                                 </div>
                             </article>
-                        </div>
-                                           
-                      </div>
+                        </div>                                           
+                    </div>
   
                 </div>
             </lightning-tab>
-
 
             <lightning-tab label="Resultados">
                 <div class=containerResultados>
@@ -234,12 +236,11 @@
                 </div>
             </lightning-tab>
         </lightning-tabset>
-
-
-        
-
-        
-
        
     </div>
+
+    <template if:true={showLookupModal}>           
+        <c-importator-lookup columna-lookup={columnLookup} value-lookup={valueLookup} oncancel={cancelLookup} onsave={saveLookup} ></c-importator-lookup>
+    </template>
+
 </template>
