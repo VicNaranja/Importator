@@ -91,7 +91,17 @@ export default class Importator extends LightningElement {
         this.lineasLimpiadas = false;
         for(var i = 0 ; i<data.length;i++)
         {
+            console.log('data[i].length::' + data[i].length);
+            console.log('this.definicionImport.columnas.length::' + this.definicionImport.columnas.length);
             if (data[i].length < this.definicionImport.columnas.length)
+            {
+                console.log('splice ' , data[i])
+                data.splice(i,1);
+                i--;
+                this.numerolineasLimpiadas++;
+                this.lineasLimpiadas = true;
+            }
+            else if (data[i].length == 1 && data[i] == '')
             {
                 console.log('splice ' , data[i])
                 data.splice(i,1);

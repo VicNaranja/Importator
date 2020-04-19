@@ -380,7 +380,7 @@ global with sharing class ImportTatorController
                     }
                     system.debug('numColumnaLookup::' + numColumnaLookup);
                     //Me recorro todas las columnas para recuperar los valores
-                    List<String> valores = new List<String>();
+                    Set<String> valores = new Set<String>();
                     for (Object linea : objects)
                     {
                         List<Object> valoresLinea = (List<Object>)linea;
@@ -388,11 +388,11 @@ global with sharing class ImportTatorController
                             valores.add('\'' + (String)valoresLinea[numColumnaLookup] + '\'');
                     }  
                     
-                    system.debug('valores::' + valores);
+                    List<String> listaValores = new List<String>(valores);
                     //Componemos query
                     String columnaSF = config.mapeo.get(key);
                     String query = 'SELECT ' + il.campoDestino + ',' + il.campoResultado + ' FROM ' + il.objetoDestino + ' WHERE ' + il.campoDestino + ' IN ';
-                    query = query + '(' + String.join(valores, ',') + ')';
+                    query = query + '(' + String.join(listaValores, ',') + ')';
                     system.debug('QUERY:' + query);
 
                     List<sObject> resultadoQuery = Database.query(query);
@@ -400,8 +400,8 @@ global with sharing class ImportTatorController
                     if (!resultadoQuery.isEmpty())
                     {
                         for (sObject a : resultadoQuery)
-                        {
-                            if (mapaResultadoQuery.containsKey((String)a.get(il.campoDestino)))
+                        {                            
+                            if (!mapaResultadoQuery.containsKey((String)a.get(il.campoDestino)))
                             {
                                 mapaResultadoQuery.put((String)a.get(il.campoDestino),(String) a.get(il.campoResultado));
                             }

@@ -7,7 +7,7 @@ El componente se puede agregar donde sea necesario, una pestaña, aplicacion, co
 
 Esta estructurado como los ETLs mas potentes del mercado. Eligiendo, origen, destino, mapeos y visualización del resultado final.
 
-Sopota ficheros CSV y EXCEL utilizando las librerias mas potentes del momento como son PAPAPARSE y SheetJS. De forma automatica podremos visualizar un preview de los registros a importar.
+Soporta ficheros CSV y EXCEL utilizando las librerias mas potentes del momento como son PAPAPARSE y SheetJS. De forma automatica podremos visualizar un preview de los registros a importar.
 Realiza un filtrado de las filas incompletas.
 
 <img src="https://raw.githubusercontent.com/VicNaranja/Importator/master/capturas/Origen.png" >
